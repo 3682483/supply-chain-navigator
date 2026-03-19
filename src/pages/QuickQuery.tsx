@@ -3,8 +3,8 @@ import { Search, ChevronDown } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const trendData = [
-  { date: "12-25", qty: 60 }, { date: "01-01", qty: 75 }, { date: "01-05", qty: 90 },
-  { date: "01-10", qty: 85 }, { date: "01-15", qty: 70 }, { date: "01-20", qty: 78 },
+  { date: "02-25", qty: 60 }, { date: "05-01", qty: 75 }, { date: "05-05", qty: 90 },
+  { date: "05-10", qty: 85 }, { date: "05-15", qty: 70 }, { date: "05-20", qty: 78 },
 ];
 
 const skuResult = {
@@ -17,16 +17,16 @@ const skuResult = {
     { code: "PHX5", name: "美西凤凰城", qty: 28, status: "可售" },
   ],
   transitDetail: [
-    { batch: "FBA001234", dest: "美西ONT8", qty: 80, shipDate: "01-20", eta: "01-28", status: "🚚 运输中" },
-    { batch: "FBA001238", dest: "美西PHX5", qty: 40, shipDate: "01-22", eta: "01-30", status: "🚚 运输中" },
+    { batch: "FBA001234", dest: "美西ONT8", qty: 80, shipDate: "05-20", eta: "05-28", status: "🚚 运输中" },
+    { batch: "FBA001238", dest: "美西PHX5", qty: 40, shipDate: "05-22", eta: "05-30", status: "🚚 运输中" },
   ],
   productionDetail: [
-    { factory: "东莞A厂", contract: "HT240115", ordered: 200, shipped: 50, remain: 150, eta: "02-15" },
-    { factory: "深圳B厂", contract: "HT240118", ordered: 100, shipped: 50, remain: 50, eta: "02-20" },
+    { factory: "东莞A厂", contract: "HT260315", ordered: 200, shipped: 50, remain: 150, eta: "04-15" },
+    { factory: "深圳B厂", contract: "HT260318", ordered: 100, shipped: 50, remain: 50, eta: "04-20" },
   ],
   warehouseDetail: [
-    { name: "厦门仓", qty: 30, location: "A-01-05", date: "01-15" },
-    { name: "广州仓", qty: 15, location: "B-02-03", date: "01-18" },
+    { name: "厦门仓", qty: 30, location: "A-01-05", date: "05-15" },
+    { name: "广州仓", qty: 15, location: "B-02-03", date: "05-18" },
   ],
 };
 

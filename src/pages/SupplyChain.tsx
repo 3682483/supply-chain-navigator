@@ -19,24 +19,24 @@ type FactoryItem = {
 
 const initShipments: ShipmentItem[] = [
   {
-    id: "FBA001234", styles: 3, carrier: "顺丰", dest: "美西ONT8", qty: 5000, cost: "¥21,000", date: "01-20", status: "🚚 运输中",
+    id: "FBA001234", styles: 3, carrier: "顺丰", dest: "美西ONT8", qty: 5000, cost: "¥21,000", date: "05-20", status: "🚚 运输中",
     details: [{ style: "ABC001 运动T恤", qty: 2000 }, { style: "ABC002 运动短裤", qty: 1500 }, { style: "ABC003 运动外套", qty: 1500 }]
   },
   {
-    id: "FBA001230", styles: 2, carrier: "德邦", dest: "美东JFK1", qty: 3200, cost: "¥15,600", date: "01-18", status: "🚚 运输中",
+    id: "FBA001230", styles: 2, carrier: "德邦", dest: "美东JFK1", qty: 3200, cost: "¥15,600", date: "05-18", status: "🚚 运输中",
     details: [{ style: "ABC001 运动T恤", qty: 1800 }, { style: "ABC004 运动背心", qty: 1400 }]
   },
   {
-    id: "FBA001225", styles: 1, carrier: "顺丰", dest: "美西ONT8", qty: 2000, cost: "¥9,200", date: "01-15", status: "✅ 已签收",
+    id: "FBA001225", styles: 1, carrier: "顺丰", dest: "美西ONT8", qty: 2000, cost: "¥9,200", date: "05-15", status: "✅ 已签收",
     details: [{ style: "ABC002 运动短裤", qty: 2000 }]
   },
 ];
 
 const initOrders: OrderItem[] = [
-  { contract: "HT240115", factory: "东莞A厂", style: "ABC001", date: "01-15", total: 2000, shipped: 1200, remain: 800, progress: 60, status: "🟡 进行中", delivery: "02-15" },
-  { contract: "HT240110", factory: "深圳B厂", style: "ABC002", date: "01-10", total: 1500, shipped: 1500, remain: 0, progress: 100, status: "✅ 已完成", delivery: "01-30" },
-  { contract: "HT240118", factory: "广州C厂", style: "ABC003", date: "01-18", total: 3000, shipped: 800, remain: 2200, progress: 27, status: "🟡 进行中", delivery: "02-28" },
-  { contract: "HT240120", factory: "东莞A厂", style: "ABC005", date: "01-20", total: 3000, shipped: 0, remain: 3000, progress: 0, status: "⏳ 待生产", delivery: "03-01" },
+  { contract: "HT260315", factory: "东莞A厂", style: "ABC001", date: "05-15", total: 2000, shipped: 1200, remain: 800, progress: 60, status: "🟡 进行中", delivery: "04-15" },
+  { contract: "HT260310", factory: "深圳B厂", style: "ABC002", date: "05-10", total: 1500, shipped: 1500, remain: 0, progress: 100, status: "✅ 已完成", delivery: "05-30" },
+  { contract: "HT260318", factory: "广州C厂", style: "ABC003", date: "05-18", total: 3000, shipped: 800, remain: 2200, progress: 27, status: "🟡 进行中", delivery: "04-28" },
+  { contract: "HT260320", factory: "东莞A厂", style: "ABC005", date: "05-20", total: 3000, shipped: 0, remain: 3000, progress: 0, status: "⏳ 待生产", delivery: "05-01" },
 ];
 
 const initFactories: FactoryItem[] = [
@@ -109,7 +109,7 @@ function NewShipmentForm({ onSave, onClose }: { onSave: (s: ShipmentItem) => voi
   const [fbaId, setFbaId] = useState("FBA00" + (1240 + Math.floor(Math.random() * 50)));
   const [carrier, setCarrier] = useState("");
   const [dest, setDest] = useState("");
-  const [date, setDate] = useState("2024-01-21");
+  const [date, setDate] = useState("2026-03-21");
   const [costUnit, setCostUnit] = useState("4.2");
   const [lines, setLines] = useState<{ style: string; qty: number }[]>([{ style: "", qty: 0 }]);
 
@@ -195,11 +195,11 @@ function NewShipmentForm({ onSave, onClose }: { onSave: (s: ShipmentItem) => voi
 
 /* ──── New Order Form ──── */
 function NewOrderForm({ onSave, onClose, initialData }: { onSave: (o: OrderItem) => void; onClose: () => void; initialData?: { style: string; total: number } | null }) {
-  const [contract, setContract] = useState("HT2401" + (20 + Math.floor(Math.random() * 30)));
+  const [contract, setContract] = useState("HT2603" + (20 + Math.floor(Math.random() * 30)));
   const [factory, setFactory] = useState("");
   const [style, setStyle] = useState(initialData?.style || "");
-  const [date, setDate] = useState("2024-01-21");
-  const [delivery, setDelivery] = useState("2024-03-01");
+  const [date, setDate] = useState("2026-03-21");
+  const [delivery, setDelivery] = useState("2026-05-01");
   const [total, setTotal] = useState(initialData?.total?.toString() || "2000");
   const [remark, setRemark] = useState("");
 

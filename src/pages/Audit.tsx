@@ -14,7 +14,7 @@ type AuditEntry = {
 
 const auditData: AuditEntry[] = [
   {
-    id: "AUD-001", time: "2024-01-20 14:32", user: "小王", module: "出库管理",
+    id: "AUD-001", time: "2026-03-20 14:32", user: "小王", module: "出库管理",
     action: "新建", target: "发货批次 FBA001234",
     detail: "新建发货批次，包含3个款式共5000件",
     changes: [
@@ -24,44 +24,44 @@ const auditData: AuditEntry[] = [
     ],
   },
   {
-    id: "AUD-002", time: "2024-01-20 11:15", user: "小李", module: "采购管理",
-    action: "修改", target: "采购订单 HT240115",
+    id: "AUD-002", time: "2026-03-20 11:15", user: "小李", module: "采购管理",
+    action: "修改", target: "采购订单 HT260315",
     detail: "修改交货日期",
     changes: [
-      { field: "交货日期", before: "2024-02-10", after: "2024-02-15" },
+      { field: "交货日期", before: "2026-04-10", after: "2026-04-15" },
       { field: "备注", before: "无", after: "工厂产能不足延期" },
     ],
   },
   {
-    id: "AUD-003", time: "2024-01-20 09:30", user: "系统", module: "数据导入",
+    id: "AUD-003", time: "2026-03-20 09:30", user: "系统", module: "数据导入",
     action: "导入", target: "FBA库存数据",
     detail: "自动导入FBA库存 1,234条SKU记录",
   },
   {
-    id: "AUD-004", time: "2024-01-19 16:45", user: "小王", module: "商品管理",
+    id: "AUD-004", time: "2026-03-19 16:45", user: "小王", module: "商品管理",
     action: "修改", target: "SKU ABC001-白色-M",
     detail: "禁用SKU",
     changes: [{ field: "状态", before: "✅ 启用", after: "⛔ 禁用" }],
   },
   {
-    id: "AUD-005", time: "2024-01-19 15:20", user: "小李", module: "采购管理",
-    action: "新建", target: "采购订单 HT240119",
+    id: "AUD-005", time: "2026-03-19 15:20", user: "小李", module: "采购管理",
+    action: "新建", target: "采购订单 HT260319",
     detail: "新建采购订单，东莞A厂，ABC005，3000件",
   },
   {
-    id: "AUD-006", time: "2024-01-19 10:00", user: "管理员", module: "系统设置",
+    id: "AUD-006", time: "2026-03-19 10:00", user: "管理员", module: "系统设置",
     action: "修改", target: "物流方式管理",
     detail: "新增铁路运输方式",
     changes: [{ field: "物流方式", before: "-", after: "铁路（中欧班列）" }],
   },
   {
-    id: "AUD-007", time: "2024-01-18 14:00", user: "小王", module: "出库管理",
+    id: "AUD-007", time: "2026-03-18 14:00", user: "小王", module: "出库管理",
     action: "修改", target: "发货批次 FBA001230",
     detail: "修改运费",
     changes: [{ field: "运费", before: "¥14,200", after: "¥15,600" }],
   },
   {
-    id: "AUD-008", time: "2024-01-18 09:00", user: "系统", module: "数据导入",
+    id: "AUD-008", time: "2026-03-18 09:00", user: "系统", module: "数据导入",
     action: "导入", target: "日均销量数据",
     detail: "自动导入日均销量 1,234条SKU记录",
   },

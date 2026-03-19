@@ -46,10 +46,10 @@ const factoryDist = [
 const PIE_COLORS = ["hsl(215, 80%, 50%)", "hsl(215, 60%, 65%)", "hsl(215, 40%, 75%)", "hsl(220, 15%, 80%)"];
 
 const activities = [
-  { time: "01-20 14:30", text: "导入FBA库存 1,234条", user: "系统" },
-  { time: "01-20 11:00", text: "新建出库单 FBA001234", user: "小王" },
-  { time: "01-20 09:30", text: "订单 HT240118 已完成", user: "系统" },
-  { time: "01-19 16:00", text: "新建采购订单 HT240119", user: "小李" },
+  { time: "03-20 14:30", text: "导入FBA库存 1,234条", user: "系统" },
+  { time: "03-20 11:00", text: "新建出库单 FBA001234", user: "小王" },
+  { time: "03-20 09:30", text: "订单 HT260318 已完成", user: "系统" },
+  { time: "03-19 16:00", text: "新建采购订单 HT260319", user: "小李" },
 ];
 
 export default function Dashboard() {
