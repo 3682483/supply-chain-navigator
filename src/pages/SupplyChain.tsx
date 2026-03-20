@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight, ArrowLeft, Truck, Factory, FileText, Eye, X, Plus, Trash2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ type ShipmentItem = {
 };
 type OrderItem = {
   contract: string; factory: string; style: string; date: string; total: number; shipped: number; remain: number; progress: number; status: string; delivery: string;
+  orders?: Record<string, Record<string, number>>;
 };
 type FactoryItem = {
   name: string; addr: string; contact: string; phone: string; styles: number; qty: string; amount: string;
@@ -32,10 +33,13 @@ const initShipments: ShipmentItem[] = [
   },
 ];
 
+const mockOrdersMatrix1 = { 黑色: { S: 500, M: 800, L: 700 }, 白色: { S: 0, M: 0, L: 0 } };
+const mockOrdersMatrix2 = { 藏青: { M: 1000, L: 500 }, 灰色: { XL: 600, L: 900 } };
+
 const initOrders: OrderItem[] = [
-  { contract: "HT260315", factory: "东莞A厂", style: "ABC001", date: "05-15", total: 2000, shipped: 1200, remain: 800, progress: 60, status: "🟡 进行中", delivery: "04-15" },
+  { contract: "HT260315", factory: "东莞A厂", style: "ABC001", date: "05-15", total: 2000, shipped: 1200, remain: 800, progress: 60, status: "🟡 进行中", delivery: "04-15", orders: mockOrdersMatrix1 },
   { contract: "HT260310", factory: "深圳B厂", style: "ABC002", date: "05-10", total: 1500, shipped: 1500, remain: 0, progress: 100, status: "✅ 已完成", delivery: "05-30" },
-  { contract: "HT260318", factory: "广州C厂", style: "ABC003", date: "05-18", total: 3000, shipped: 800, remain: 2200, progress: 27, status: "🟡 进行中", delivery: "04-28" },
+  { contract: "HT260318", factory: "广州C厂", style: "ABC003", date: "05-18", total: 3000, shipped: 800, remain: 2200, progress: 27, status: "🟡 进行中", delivery: "04-28", orders: mockOrdersMatrix2 },
   { contract: "HT260320", factory: "东莞A厂", style: "ABC005", date: "05-20", total: 3000, shipped: 0, remain: 3000, progress: 0, status: "⏳ 待生产", delivery: "05-01" },
 ];
 
@@ -50,6 +54,8 @@ const destinations = ["美西ONT8", "美西PHX5", "美东JFK1", "美中ORD2"];
 const factoryOptions = ["东莞A厂", "深圳B厂", "广州C厂"];
 const styleOptions = ["ABC001", "ABC002", "ABC003", "ABC004", "ABC005"];
 const styleNames: Record<string, string> = { ABC001: "运动T恤", ABC002: "运动短裤", ABC003: "运动外套", ABC004: "运动背心", ABC005: "运动长裤" };
+const colors = ["黑色", "白色", "灰色", "藏青", "红色", "蓝色"];
+const sizes = ["S", "M", "L", "XL", "2XL", "3XL", "4XL"];
 
 const factoryDetail = {
   name: "东莞A厂",
@@ -194,24 +200,38 @@ function NewShipmentForm({ onSave, onClose }: { onSave: (s: ShipmentItem) => voi
 }
 
 /* ──── New Order Form ──── */
-function NewOrderForm({ onSave, onClose, initialData }: { onSave: (o: OrderItem) => void; onClose: () => void; initialData?: { style: string; total: number } | null }) {
+function NewOrderForm({ onSave, onClose, initialData }: { onSave: (o: OrderItem) => void; onClose: () => void; initialData?: { style: string; total: number; orders?: Record<string, Record<string, number>> } | null }) {
   const [contract, setContract] = useState("HT2603" + (20 + Math.floor(Math.random() * 30)));
   const [factory, setFactory] = useState("");
   const [style, setStyle] = useState(initialData?.style || "");
   const [date, setDate] = useState("2026-03-21");
   const [delivery, setDelivery] = useState("2026-05-01");
-  const [total, setTotal] = useState(initialData?.total?.toString() || "2000");
   const [remark, setRemark] = useState("");
+  const [showMatrix, setShowMatrix] = useState(false);
+
+  // Editable Orders Matrix
+  const [ordersMatrix, setOrdersMatrix] = useState<Record<string, Record<string, number>>>(() => {
+    if (initialData?.orders) return initialData.orders;
+    const init: Record<string, Record<string, number>> = {};
+    colors.forEach(c => { init[c] = {}; sizes.forEach(s => init[c][s] = 0); });
+    return init;
+  });
+
+  const updateMatrix = (c: string, s: string, v: number) => {
+    setOrdersMatrix(prev => ({ ...prev, [c]: { ...prev[c], [s]: v } }));
+  };
+
+  const calculatedTotal = Object.values(ordersMatrix).reduce((sum, szs) => sum + Object.values(szs).reduce((s, qty) => s + qty, 0), 0) || (parseInt(initialData?.total?.toString() || "0")) || 0;
 
   const handleSave = () => {
-    if (!factory || !style || !total) { toast.error("请填写完整信息"); return; }
-    const qty = parseInt(total) || 0;
+    if (!factory || !style || calculatedTotal <= 0) { toast.error("请填写完整信息，且总数量须大于0"); return; }
     onSave({
       contract, factory, style,
       date: date.slice(5).replace("-", "-"),
-      total: qty, shipped: 0, remain: qty, progress: 0,
+      total: calculatedTotal, shipped: 0, remain: calculatedTotal, progress: 0,
       status: "⏳ 待生产",
       delivery: delivery.slice(5).replace("-", "-"),
+      orders: ordersMatrix,
     });
     toast.success(`采购订单 ${contract} 创建成功！`);
     onClose();
@@ -225,15 +245,60 @@ function NewOrderForm({ onSave, onClose, initialData }: { onSave: (o: OrderItem)
         <FormSelect label="款号" value={style} onChange={setStyle} options={styleOptions} />
         <FormInput label="下单日期" value={date} onChange={setDate} type="date" />
         <FormInput label="交货日期" value={delivery} onChange={setDelivery} type="date" />
-        <FormInput label="下单总量" value={total} onChange={setTotal} type="number" />
+        <div className="flex flex-col">
+          <FieldLabel>下单总量 (来自矩阵自动统计)</FieldLabel>
+          <input type="number" readOnly value={calculatedTotal} className="w-full px-3 py-2 rounded-lg border border-input bg-muted text-muted-foreground font-bold text-sm cursor-not-allowed" />
+        </div>
       </div>
       <FormInput label="备注" value={remark} onChange={setRemark} placeholder="可选" />
 
       {style && (
         <div className="p-3 rounded-lg bg-accent/50 text-sm">
-          💡 款式 <b>{style} {styleNames[style]}</b> — 下单 <b>{parseInt(total || "0").toLocaleString()}件</b> 至 <b>{factory || "..."}</b>
+          💡 款式 <b>{style} {styleNames[style]}</b> — 下单 <b>{calculatedTotal.toLocaleString()}件</b> 至 <b>{factory || "..."}</b>
         </div>
       )}
+
+      <div className="border border-border rounded-lg overflow-hidden -mx-1 mt-4">
+        <div
+          className="p-3 bg-muted/40 text-sm font-medium flex items-center justify-between cursor-pointer hover:bg-primary/5 transition-colors"
+          onClick={() => setShowMatrix(!showMatrix)}
+        >
+          <span className="flex items-center gap-2 font-bold text-primary"><Eye className="w-4 h-4" /> 查看/编辑本次协同的「采购明细矩阵」</span>
+          {showMatrix ? <ChevronDown className="w-4 h-4 text-primary" /> : <ChevronRight className="w-4 h-4 text-primary" />}
+        </div>
+        {showMatrix && (
+          <div className="p-0 bg-background overflow-x-auto border-t border-border max-h-[250px] overflow-y-auto">
+            <table className="w-full text-xs text-center border-collapse">
+              <thead className="sticky top-0 bg-muted/90 backdrop-blur shadow-sm z-10">
+                <tr>
+                  <th className="p-2 border-b border-border font-medium sticky left-0 bg-muted/90 whitespace-nowrap">颜色 \ 尺码</th>
+                  {sizes.map(s => <th key={s} className="p-2 border-b border-border font-medium text-muted-foreground">{s}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {colors.map((c) => (
+                  <tr key={c} className="hover:bg-muted/30">
+                    <td className="p-2 border-b border-border font-bold bg-muted/10 sticky left-0 whitespace-nowrap">{c}</td>
+                    {sizes.map((s) => (
+                      <td key={s} className="p-1 border-b border-border min-w-[60px]">
+                        <input
+                          type="number"
+                          min={0}
+                          value={ordersMatrix[c]?.[s] || ""}
+                          onChange={(e) => updateMatrix(c, s, parseInt(e.target.value) || 0)}
+                          placeholder="-"
+                          className={`w-full text-center px-1 py-1 rounded bg-transparent border-transparent hover:border-input focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary ${(ordersMatrix[c]?.[s] > 0) ? "text-primary font-bold bg-primary/5" : "text-muted-foreground/60"
+                            }`}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       <div className="flex justify-end gap-3">
         <button onClick={onClose} className="px-4 py-2 rounded-lg bg-muted text-muted-foreground text-sm">取消</button>
@@ -278,13 +343,14 @@ export default function SupplyChain() {
   const location = useLocation();
   const [tab, setTab] = useState<Tab>("shipments");
   const [expandedShipment, setExpandedShipment] = useState<string | null>("FBA001234");
+  const [expandedOrder, setExpandedOrder] = useState<string | null>("HT260315");
   const [showFactory, setShowFactory] = useState(false);
   const [modal, setModal] = useState<Modal>(null);
 
   const [shipmentList, setShipmentList] = useState<ShipmentItem[]>(initShipments);
   const [orderList, setOrderList] = useState<OrderItem[]>(initOrders);
   const [factoryList, setFactoryList] = useState<FactoryItem[]>(initFactories);
-  const [initialOrderData, setInitialOrderData] = useState<{ style: string; total: number } | null>(null);
+  const [initialOrderData, setInitialOrderData] = useState<{ style: string; total: number; orders?: Record<string, Record<string, number>> } | null>(null);
 
   useEffect(() => {
     if (location.state?.autoOpenOrderModal) {
@@ -293,6 +359,7 @@ export default function SupplyChain() {
       setInitialOrderData({
         style: location.state.autoFillStyle || "",
         total: location.state.autoFillTotal || 0,
+        orders: location.state.autoFillOrders || undefined
       });
       // clear the state from the history so it doesn't pop up again if refreshed
       window.history.replaceState({}, document.title);
@@ -429,23 +496,59 @@ export default function SupplyChain() {
             <button onClick={() => setModal("order")} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">+ 新建采购单</button>
           </div>
           <table className="data-table">
-            <thead><tr><th>合同编号</th><th>工厂</th><th>款号</th><th>下单日期</th><th>总数量</th><th>已发货</th><th>剩余</th><th>进度</th><th>交货日期</th><th>状态</th></tr></thead>
+            <thead><tr><th></th><th>合同编号</th><th>工厂</th><th>款号</th><th>下单日期</th><th>总数量</th><th>已发货</th><th>剩余</th><th>进度</th><th>交货日期</th><th>状态</th></tr></thead>
             <tbody>
               {orderList.map((o) => (
-                <tr key={o.contract}>
-                  <td className="font-medium">{o.contract}</td><td>{o.factory}</td><td>{o.style}</td><td>{o.date}</td>
-                  <td>{o.total.toLocaleString()}</td><td>{o.shipped.toLocaleString()}</td>
-                  <td className="text-warning font-medium">{o.remain.toLocaleString()}</td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
-                        <div className="h-full rounded-full bg-primary" style={{ width: `${o.progress}%` }} />
+                <React.Fragment key={o.contract}>
+                  <tr className={o.orders ? "cursor-pointer hover:bg-muted/30" : ""} onClick={() => o.orders && setExpandedOrder(expandedOrder === o.contract ? null : o.contract)}>
+                    <td className="w-8">{o.orders ? (expandedOrder === o.contract ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />) : null}</td>
+                    <td className="font-medium">{o.contract}</td><td>{o.factory}</td><td>{o.style}</td><td>{o.date}</td>
+                    <td>{o.total.toLocaleString()}</td><td>{o.shipped.toLocaleString()}</td>
+                    <td className="text-warning font-medium">{o.remain.toLocaleString()}</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full bg-primary" style={{ width: `${o.progress}%` }} />
+                        </div>
+                        <span className="text-xs">{o.progress}%</span>
                       </div>
-                      <span className="text-xs">{o.progress}%</span>
-                    </div>
-                  </td>
-                  <td>{o.delivery}</td><td>{o.status}</td>
-                </tr>
+                    </td>
+                    <td>{o.delivery}</td><td>{o.status}</td>
+                  </tr>
+
+                  {expandedOrder === o.contract && o.orders && (
+                    <tr key={o.contract + "-detail"}>
+                      <td colSpan={11} className="bg-accent/30 p-4 border-y border-border">
+                        <div className="text-sm font-medium mb-3 flex items-center gap-2"><Eye className="w-4 h-4 text-primary" /> 采购预案明细矩阵 - <span className="text-muted-foreground">{o.style}</span></div>
+                        <div className="overflow-x-auto bg-background rounded-lg border border-border shadow-sm">
+                          <table className="w-full text-xs text-center border-collapse">
+                            <thead className="bg-muted/50">
+                              <tr>
+                                <th className="p-2 border-b border-border font-medium">颜色 \ 尺码</th>
+                                {sizes.map(s => <th key={s} className="p-2 border-b border-border font-medium text-muted-foreground">{s}</th>)}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {colors.filter(c => Object.values(o.orders![c] || {}).some(qty => qty > 0)).map((c) => (
+                                <tr key={c} className="hover:bg-muted/30 transition-colors">
+                                  <td className="p-2 border-b border-border font-bold bg-muted/10">{c}</td>
+                                  {sizes.map((s) => {
+                                    const qty = o.orders![c]?.[s] || 0;
+                                    return (
+                                      <td key={s} className={`p-2 border-b border-border transition-colors ${qty > 0 ? "text-primary font-bold bg-primary/5" : "text-muted-foreground/30"}`}>
+                                        {qty > 0 ? qty : "-"}
+                                      </td>
+                                    )
+                                  })}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

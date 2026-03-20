@@ -286,7 +286,8 @@ export default function Simulation() {
                     state: {
                       autoOpenOrderModal: true,
                       autoFillTotal: grandTotal,
-                      autoFillStyle: selectedStyle
+                      autoFillStyle: selectedStyle,
+                      autoFillOrders: orders
                     }
                   });
                 }, 1200);

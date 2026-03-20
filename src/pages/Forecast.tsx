@@ -154,7 +154,7 @@ export default function Forecast() {
 
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-xl font-bold flex items-center gap-2">运营与计划预期录入中台</h2>
+                    <h2 className="text-xl font-bold flex items-center gap-2">运营与计划预期录入</h2>
                     <p className="text-sm text-muted-foreground mt-1">
                         将业务预判的“销量”与“运营指标（点击/转化等）”写入系统，支撑供应链推演演算。
                     </p>
