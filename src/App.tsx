@@ -14,6 +14,7 @@ import ProductSetup from "./pages/ProductSetup";
 import Forecast from "./pages/Forecast";
 import Backup from "./pages/Backup";
 import Permissions from "./pages/Permissions";
+import DataSync from "./pages/DataSync";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
         <AppLayout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/sync" element={<DataSync />} />
             <Route path="/query" element={<QuickQuery />} />
             <Route path="/simulation" element={<Simulation />} />
             <Route path="/supply-chain" element={<SupplyChain />} />
