@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BarChart3, Package, Search, Calculator, Truck, FileText, ChevronLeft, ChevronRight, Bell, Target, Layers } from "lucide-react";
+import AIAssistant from "./AIAssistant";
 
 const menuItems = [
   { icon: BarChart3, label: "今日关注", path: "/" },
@@ -87,6 +88,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="flex-1 overflow-auto p-6">{children}</main>
+        <AIAssistant />
       </div>
     </div>
   );
