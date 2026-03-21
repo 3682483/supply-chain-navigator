@@ -80,7 +80,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               onClick={() => setShowPresentation(true)}
               className="group flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground hover:opacity-90 rounded-full transition-all text-sm font-bold shadow-md hover:scale-105"
             >
-              <PlayCircle className="w-4 h-4 animate-pulse group-hover:animate-none" /> 商业演示
+              <PlayCircle className="w-4 h-4 animate-pulse group-hover:animate-none" /> 系统演示
             </button>
             <button className="relative p-2 rounded-full hover:bg-muted transition-colors border border-transparent hover:border-border">
               <Bell className="w-[18px] h-[18px] text-muted-foreground" />
