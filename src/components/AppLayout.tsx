@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BarChart3, Package, Search, Calculator, Truck, FileText, ChevronLeft, ChevronRight, Bell, Target, Layers, Database, Shield, RefreshCw, PlayCircle } from "lucide-react";
 import AIAssistant from "./AIAssistant";
-import Presentation from "./Presentation";
 
 const menuItems = [
   { icon: BarChart3, label: "今日关注", path: "/" },
@@ -19,7 +18,6 @@ const menuItems = [
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [showPresentation, setShowPresentation] = useState(false);
   const location = useLocation();
 
   return (
@@ -76,12 +74,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             {menuItems.find((m) => m.path === location.pathname)?.label || "供应链中台BI系统"}
           </h1>
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setShowPresentation(true)}
-              className="group flex items-center gap-2 px-3 py-1.5 bg-primary text-primary-foreground hover:opacity-90 rounded-full transition-all text-sm font-bold shadow-md hover:scale-105"
-            >
-              <PlayCircle className="w-4 h-4 animate-pulse group-hover:animate-none" /> 系统演示
-            </button>
             <button className="relative p-2 rounded-full hover:bg-muted transition-colors border border-transparent hover:border-border">
               <Bell className="w-[18px] h-[18px] text-muted-foreground" />
               <span className="absolute top-1 right-1.5 w-2 h-2 bg-danger rounded-full border-2 border-card" />
@@ -100,7 +92,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         <main className="flex-1 overflow-auto p-6">{children}</main>
         <AIAssistant />
-        {showPresentation && <Presentation onClose={() => setShowPresentation(false)} />}
       </div>
     </div>
   );
